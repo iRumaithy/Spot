@@ -1,5 +1,5 @@
-const CACHE_NAME='thawaq-shell-v3.1.0';
-const APP_SHELL=['./','./index.html','./config.js','./manifest.webmanifest?v=3100','./thawaq-v3.css?v=3100','./thawaq-v3.js?v=3100','./icon-180.png?v=3100','./icon-192.png?v=3100','./icon-512.png?v=3100','./icon-512-maskable.png?v=3100'];
+const CACHE_NAME='thawaq-shell-v3.1.1';
+const APP_SHELL=['./','./index.html','./config.js','./manifest.webmanifest?v=3111','./thawaq-v3.css?v=3111','./thawaq-v3.js?v=3111','./icon-180.png?v=3111','./icon-192.png?v=3111','./icon-512.png?v=3111','./icon-512-maskable.png?v=3111'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_SHELL)))});
 // Never call skipWaiting automatically; an explicit user action sends this message.
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
@@ -8,5 +8,5 @@ self.addEventListener('fetch',event=>{const req=event.request;if(req.method!=='G
  if(req.mode==='navigate'||url.origin===self.location.origin&&/\/(index\.html|config\.js|thawaq-v3\.js|thawaq-v3\.css)$/.test(url.pathname)){event.respondWith(fetch(req).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy)).catch(()=>{})}return res}).catch(()=>caches.match(req).then(r=>r||caches.match('./index.html'))));return}
  if(url.origin===self.location.origin||url.hostname==='cdn.jsdelivr.net'){event.respondWith(caches.match(req).then(r=>r||fetch(req).then(res=>{if(res.ok){let copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy)).catch(()=>{})}return res})));}
 });
-self.addEventListener('push',event=>{let data={};try{data=event.data?.json()||{}}catch{data={body:event.data?.text()||''}};event.waitUntil(self.registration.showNotification(data.title||'ذواق',{body:data.body||'عندك إشعار جديد من ذواق.',icon:'./icon-192.png?v=3100',badge:'./icon-192.png?v=3100',tag:data.tag||`thawaq-${data.version||'notice'}`,renotify:true,data:{url:data.url||'./',version:data.version||'',kind:data.kind||''}}))});
+self.addEventListener('push',event=>{let data={};try{data=event.data?.json()||{}}catch{data={body:event.data?.text()||''}};event.waitUntil(self.registration.showNotification(data.title||'ذواق',{body:data.body||'عندك إشعار جديد من ذواق.',icon:'./icon-192.png?v=3111',badge:'./icon-192.png?v=3111',tag:data.tag||`thawaq-${data.version||'notice'}`,renotify:true,data:{url:data.url||'./',version:data.version||'',kind:data.kind||''}}))});
 self.addEventListener('notificationclick',event=>{event.notification.close();const target=new URL(event.notification.data?.url||'./',self.location.origin).href;event.waitUntil((async()=>{const cs=await clients.matchAll({type:'window',includeUncontrolled:true});for(const c of cs){if('focus' in c){try{await c.navigate(target)}catch{}return c.focus()}}return clients.openWindow?clients.openWindow(target):undefined})())});
