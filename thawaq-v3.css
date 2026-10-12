@@ -75,3 +75,20 @@ body.dark .workspace,body.dark .root{color:#e8f1e9}body.dark .app-header{backgro
 .web-library-foot{margin-top:15px}.web-commons-link{display:inline-block;color:#275e41;font-size:12px;margin:6px 0}
 @media(max-width:480px){.web-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.web-photo-tile img{height:115px}.web-search-controls .btn{padding:11px 12px}.discover-mode{font-size:11px}.image-library-panel{padding:17px}}
 body.dark .image-library-panel{background:#1b3325;color:#e4efe7}body.dark .web-photo-tile,body.dark .discover-mode.active{background:#314538;color:#e7f3e8}body.dark .web-search-controls input{background:#244130;color:#fff}
+
+/* v3.1.2 — installable iOS PWA touch guard and official Google Images handoff */
+html.thawaq-standalone, html.thawaq-standalone body{overscroll-behavior-y:none;touch-action:pan-x pan-y}
+.google-image-panel{display:flex;flex-direction:column;gap:8px}
+.google-image-panel .image-library-head{margin-bottom:6px}
+.google-wordmark{font:600 11px system-ui,sans-serif;direction:ltr;color:#597a63;margin-inline-start:5px}
+.google-image-panel .web-search-controls{margin:5px 0}
+.google-launch-btn,.google-library-pick{display:flex;width:100%;min-height:48px;justify-content:center;white-space:normal}
+.google-license-link{display:block;text-align:center;color:#2d644b;font-size:12px;text-decoration:underline;text-underline-offset:3px;padding:6px 4px}
+.google-photo-steps{border:1px solid #e1e8db;border-radius:17px;background:#f4f8f1;padding:15px 17px;color:#405949;font-size:12px;line-height:1.8}
+.google-photo-steps b{font-size:13px}
+.google-photo-steps ol{margin:7px 18px 0 0;padding:0}
+.google-photo-steps li{padding:2px 0}
+.google-photo-rights{margin-top:7px}
+@media(max-width:760px){.modal-dialog input,.modal-dialog select,.modal-dialog textarea,.google-image-panel input{font-size:16px}}
+body.dark .google-photo-steps{background:#254132;border-color:#4b6755;color:#ecf5ed}
+body.dark .google-license-link{color:#b5ddba}
