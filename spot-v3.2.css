@@ -94,13 +94,22 @@ body.dark .google-photo-steps{background:#254132;border-color:#4b6755;color:#ecf
 body.dark .google-license-link{color:#b5ddba}
 
 /* Spot 3.2 — half-star chooser, private chat and adaptive English UI */
-.spot-half-rating{direction:ltr;flex-wrap:nowrap;gap:7px}
-.spot-star-unit{display:inline-flex;position:relative;flex:0 0 42px;width:42px;height:47px;align-items:center;justify-content:center}
-.spot-star-glyph{font-size:38px;line-height:1;color:transparent;background:linear-gradient(90deg,#c69c5e var(--spot-fill,0%),#d1d9cf var(--spot-fill,0%));-webkit-background-clip:text;background-clip:text;pointer-events:none}
-.spot-half-zone{position:absolute;top:0;bottom:0;width:50%;border:0;background:transparent;z-index:2;padding:0;cursor:pointer}
-.spot-half-zone:focus-visible{outline:2px solid #265a45;border-radius:6px}
-.spot-half-zone.first{left:0}.spot-half-zone.second{right:0}
-.spot-half-rating strong{font-variant-numeric:tabular-nums;font-size:13px;white-space:nowrap;color:#8f6a2c}
+/* Spot owner preview · restore five clearly separated star tiles, with real half-star drag. */
+.spot-rating-field{min-width:0}
+.spot-half-rating{display:flex;direction:rtl;align-items:center;justify-content:flex-start;flex-wrap:nowrap;gap:8px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;overscroll-behavior:contain;width:max-content;max-width:100%;border-radius:12px;cursor:ew-resize;outline-offset:5px}
+.spot-half-rating:focus-visible{outline:2px solid #286649}
+.spot-star-unit{position:relative;display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border:1px solid #e5e2d8;border-radius:13px;background:#faf9f5;color:#acb4ab;overflow:hidden;box-sizing:border-box;transition:border-color .12s ease,background-color .12s ease}
+.spot-star-unit[style*="100%"],.spot-star-unit[style*="50%"]{background:#fff7e5;border-color:#ead9b5}
+.spot-star-glyph,.spot-star-fill{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;font-size:29px;line-height:1;pointer-events:none}
+.spot-star-glyph{color:#aeb9af}
+.spot-star-fill{color:#d5a13d;clip-path:inset(0 0 0 calc(100% - var(--spot-fill,0%)));}
+html[dir="ltr"] .spot-star-fill{clip-path:inset(0 calc(100% - var(--spot-fill,0%)) 0 0)}
+.spot-half-rating strong{flex:0 0 auto;white-space:nowrap;color:#946c2d;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;direction:ltr;margin-inline-start:3px}
+.spot-rating-hint{color:#7c8a7d;font-size:11px;margin-top:3px;display:block}
+html[dir="ltr"] .spot-half-rating{direction:ltr}
+body.dark .spot-star-unit{background:#293d33;border-color:#42624f}
+body.dark .spot-star-glyph{color:#7b9485}
+body.dark .spot-star-fill{color:#e2b878}
 .spot-dm-page{display:grid;gap:17px}.spot-dm-layout{display:grid;grid-template-columns:minmax(205px,285px) minmax(0,1fr);gap:14px}
 .spot-dm-peers,.spot-dm-room{min-height:390px;padding:15px}.spot-dm-peers h3{margin:0 0 10px}.spot-dm-peers .search-wrap{width:100%;margin:0 0 10px}
 .spot-dm-peer{width:100%;display:flex;align-items:center;text-align:start;gap:10px;border:0;background:transparent;padding:10px;border-radius:11px;color:inherit;cursor:pointer}.spot-dm-peer:hover,.spot-dm-peer.active{background:#e7f0e8}.spot-dm-peer span:not(.avatar-mini){display:grid;gap:2px;min-width:0}.spot-dm-peer small{color:#809288}.spot-dm-dot{width:9px;height:9px;border-radius:50%;background:#e5ac57;margin-inline-start:auto}
@@ -108,8 +117,8 @@ body.dark .google-license-link{color:#b5ddba}
 #spotLanguageBtn{font-weight:800;font-size:12px}#spotInboxBtn{position:relative}.spot-inbox-badge{position:absolute;top:0;left:0;min-width:15px;height:15px;border-radius:12px;background:#c63d46;color:#fff;font:700 9px system-ui;display:grid;place-items:center}
 html[lang="en"] body,html[lang="en"] .root,html[lang="en"] .modal-dialog{direction:ltr}html[lang="en"] .nav-button{text-align:left}html[lang="en"] .spot-dm-peer{text-align:left}
 html[lang="en"] .rail{border-right:1px solid #ebeee7;border-left:0}html[lang="en"] .header-tools{flex-direction:row}html[lang="en"] .spot-half-rating{direction:ltr}
-@media(max-width:760px){.spot-dm-layout{grid-template-columns:1fr}.spot-dm-peers,.spot-dm-room{min-height:unset}.spot-dm-peers{max-height:230px;overflow:auto}.spot-dm-bubbles{min-height:210px;max-height:43vh}.spot-half-rating{gap:4px}.spot-star-unit{width:37px;flex-basis:37px}.spot-star-glyph{font-size:33px}.header-tools{gap:4px}#spotLanguageBtn,#spotInboxBtn{width:35px;height:38px}.spot-dm-compose .btn{padding:10px}}
-@media(max-width:385px){.spot-half-rating{gap:2px}.spot-star-unit{width:34px;flex-basis:34px}}
+@media(max-width:760px){.spot-dm-layout{grid-template-columns:1fr}.spot-dm-peers,.spot-dm-room{min-height:unset}.spot-dm-peers{max-height:230px;overflow:auto}.spot-dm-bubbles{min-height:210px;max-height:43vh}.spot-half-rating{gap:6px}.spot-star-unit{width:44px;flex-basis:44px;height:45px}.spot-star-glyph,.spot-star-fill{font-size:27px}.header-tools{gap:4px}#spotLanguageBtn,#spotInboxBtn{width:35px;height:38px}.spot-dm-compose .btn{padding:10px}}
+@media(max-width:385px){.spot-half-rating{gap:4px}.spot-star-unit{width:40px;flex-basis:40px;height:43px}.spot-star-glyph,.spot-star-fill{font-size:24px}.spot-half-rating strong{font-size:13px}}
 
 /* SPOT · refined gold brand signature. Small enough for iPhone header. */
 #headerSubtitle{
@@ -143,3 +152,11 @@ html[lang="en"] .rail{border-right:1px solid #ebeee7;border-left:0}html[lang="en
 .spot-brand-intro__tagline{font:600 12px/1.45 system-ui,-apple-system,sans-serif;letter-spacing:.12em;color:#e1c18d;white-space:nowrap}
 @media(max-width:390px){.spot-brand-intro__logo{width:100px;height:100px}.spot-brand-intro__tagline{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.spot-brand-intro{display:none!important}}
+
+/* Owner-only Spot installation link – full URL is genuine, not a display alias. */
+.spot-owner-install{background:#f2f7f1;border:1px solid #d7e5d8;border-radius:16px;padding:16px;margin-bottom:16px}
+.spot-owner-install h3{margin:0 0 9px}
+.spot-install-link{overflow-wrap:anywhere;word-break:break-word;font:600 13px/1.7 ui-monospace,SFMono-Regular,monospace;background:#fff;padding:10px 12px;border:1px solid #d4e3d5;border-radius:10px;color:#27563e;text-align:left}
+.spot-install-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
+.spot-install-actions>.btn{flex:1 1 120px}
+body.dark .spot-owner-install{background:#1f3429;border-color:#4a6854}

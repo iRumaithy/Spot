@@ -1,5 +1,5 @@
-const CACHE_NAME='spot-shell-v3.2-brand3202';
-const APP_SHELL=['./','./index.html','./config.js','./manifest.webmanifest?v=spotbrand3202','./thawaq-v3.css?v=3112','./release-router.js?v=spotbrand3202','./thawaq-v3.1.2.js?v=spotbrand3202stable','./icon-180.png?v=spotbrand3202','./icon-192.png?v=spotbrand3202','./icon-512.png?v=spotbrand3202','./icon-512-maskable.png?v=spotbrand3202'];
+const CACHE_NAME='spot-shell-v3.2-rating3203';
+const APP_SHELL=['./','./index.html','./config.js','./manifest.webmanifest?v=spotbrand3202','./thawaq-v3.css?v=3112','./release-router.js?v=spotrating3203','./thawaq-v3.1.2.js?v=spotbrand3202stable','./icon-180.png?v=spotbrand3202','./icon-192.png?v=spotbrand3202','./icon-512.png?v=spotbrand3202','./icon-512-maskable.png?v=spotbrand3202'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_SHELL)))});
 // Never call skipWaiting automatically; an explicit user action sends this message.
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
