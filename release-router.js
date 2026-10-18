@@ -1,7 +1,7 @@
 /* SPOT release router: never pick a candidate from public assets until owner approves.
    Device upgrades only after explicit user choice, never via Refresh. */
 (()=>{'use strict';
- const STABLE='3.1.2',NEXT='3.2.0',DEVICE_KEY='thawaq-user-approved-version',SURL=window.APP_CONFIG?.SUPABASE_URL,KEY=window.APP_CONFIG?.SUPABASE_PUBLISHABLE_KEY;
+ const STABLE='3.2.0',NEXT='3.2.1',LEGACY='3.1.2',DEVICE_KEY='thawaq-user-approved-version',SURL=window.APP_CONFIG?.SUPABASE_URL,KEY=window.APP_CONFIG?.SUPABASE_PUBLISHABLE_KEY;
  let shown=false,seenPublished='';
  const cmp=(a,b)=>{const aa=(a||'').split('.').map(Number),bb=(b||'').split('.').map(Number);for(let i=0;i<Math.max(aa.length,bb.length);i++){const d=(aa[i]||0)-(bb[i]||0);if(d)return d}return 0};
  async function published(){
@@ -25,15 +25,19 @@
  async function checkUpgrade(){
   const stable=await published();seenPublished=stable;
   const accepted=localStorage.getItem(DEVICE_KEY);
-  if(cmp(stable,NEXT)>=0&&accepted!==NEXT)promptUpdate(NEXT);
+  const current=accepted===LEGACY?LEGACY:(accepted===NEXT||(!accepted&&cmp(stable,NEXT)>=0)?NEXT:STABLE);
+  if(cmp(stable,current)>0)promptUpdate(stable);
  }
  async function init(){
   const live=await published();seenPublished=live;
   const accepted=localStorage.getItem(DEVICE_KEY);
-  const useCandidate=cmp(live,NEXT)>=0&&accepted===NEXT;
+  // New visitors start with the latest released version. Previously installed clients keep
+  // their chosen version until they explicitly confirm the update.
+  const useCandidate=cmp(live,NEXT)>=0&&(accepted===NEXT||!accepted);
+  const useLegacy=accepted===LEGACY;
   const script=document.createElement('script');
-  script.src=useCandidate?'./spot-v3.2.js?v=spotpath3204':'./thawaq-v3.1.2.js?v=spotbrand3202stable';script.defer=true;
-  if(useCandidate){
+  script.src=useCandidate?'./spot-v3.2.1.js?v=signup321':useLegacy?'./thawaq-v3.1.2.js?v=3112stable':'./spot-v3.2.js?v=spotpath3204';script.defer=true;
+  if(!useLegacy){
    document.querySelector('link[rel="manifest"]')?.setAttribute('href','./manifest.webmanifest?v=spotbrand3202');
    document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content','Spot');
    document.querySelector('meta[name="application-name"]')?.setAttribute('content','Spot');
@@ -41,12 +45,13 @@
    const slogan=document.getElementById('headerSubtitle');if(slogan){slogan.textContent='Every Place Has a Story';slogan.lang='en';slogan.dir='ltr'}
    document.querySelectorAll('.header-identity strong,.rail-logo strong').forEach(n=>n.textContent='Spot');
    document.querySelectorAll('.rail-logo small,.latin').forEach(n=>n.textContent='SPOT');
-   const style=document.createElement('link');style.rel='stylesheet';style.href='./spot-v3.2.css?v=spotpath3204';document.head.appendChild(style);
-   await new Promise(resolve=>{const i18n=document.createElement('script');i18n.src='./spot-i18n.js?v=3200';i18n.onload=resolve;i18n.onerror=resolve;document.head.appendChild(i18n)});
+   const style=document.createElement('link');style.rel='stylesheet';style.href='./spot-v3.2.css?v=signup321';document.head.appendChild(style);
+   await new Promise(resolve=>{const i18n=document.createElement('script');i18n.src='./spot-i18n.js?v=signup321';i18n.onload=resolve;i18n.onerror=resolve;document.head.appendChild(i18n)});
   }
-  script.onerror=()=>{if(useCandidate){localStorage.removeItem(DEVICE_KEY);location.reload()}else console.error('تعذر تحميل ملفات Spot')};
+  script.onerror=()=>{console.error('تعذر تحميل إصدار Spot المطلوب');if(useCandidate&&accepted===NEXT){localStorage.removeItem(DEVICE_KEY);location.reload()}};
   document.body.appendChild(script);
-  if(cmp(live,NEXT)>=0&&!useCandidate)setTimeout(()=>promptUpdate(NEXT),1800);
+  const actual=useLegacy?LEGACY:useCandidate?NEXT:STABLE;
+  if(cmp(live,actual)>0)setTimeout(()=>promptUpdate(live),1800);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpgrade()});
   setInterval(checkUpgrade,60000);
   try{if(window.supabase&&SURL&&KEY){const observer=window.supabase.createClient(SURL,KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
