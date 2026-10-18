@@ -413,7 +413,7 @@ function bootSpotIntro(){
  window.setTimeout(()=>{screen.classList.add('spot-brand-intro--end');window.setTimeout(()=>screen.remove(),280)},980);
 }
 
-bootSpotIntro();
+// Spot intro runs in shared HTML for both the stable client and owner preview.
 init();
 setInterval(()=>{if(state.me)reportClientVersion()},5*60*1000);
 })();

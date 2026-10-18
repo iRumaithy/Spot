@@ -10,37 +10,58 @@ if ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matche
   document.documentElement.classList.add('thawaq-standalone');
 }
 </script>
+<style>
+/* SPOT unified opening — compatible with both stable app and owner's preview. */
+.spot-brand-intro{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 10%,#356051 0%,#23473b 50%,#142e27 100%);opacity:1;transition:opacity .26s ease;pointer-events:none}
+.spot-brand-intro--end{opacity:0}
+.spot-brand-intro__circles{position:absolute;width:115vmax;height:115vmax;border:1px solid rgba(235,220,185,.14);border-radius:50%;top:7%;left:-48%;box-shadow:0 0 0 95px rgba(225,215,181,.035),0 0 0 190px rgba(225,215,181,.025)}
+.spot-brand-intro__content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:24px}
+.spot-brand-intro__logo{width:112px;height:112px;object-fit:cover;border-radius:25px;filter:drop-shadow(0 12px 22px rgba(0,0,0,.18))}
+.spot-brand-intro__name{font:750 37px/1.2 system-ui,-apple-system,sans-serif;letter-spacing:.04em;color:#fffaf0}
+.spot-brand-intro__tagline{font:600 12px/1.4 system-ui,-apple-system,sans-serif;letter-spacing:.1em;color:#e3c18b;white-space:nowrap}
+@media(prefers-reduced-motion:reduce){.spot-brand-intro{display:none!important}}
+</style>
 <meta name="theme-color" content="#f7f5f0">
-<meta name="apple-mobile-web-app-title" content="ذواق">
-<meta name="description" content="ذواق — ذكرياتك الحلوة مع الأكل والقهوة والشاي">
-<title>ذواق | THAWAQ — أماكن وتجارب تستحق التذكر</title>
-<link rel="manifest" href="manifest.webmanifest?v=3112">
+<meta name="apple-mobile-web-app-title" content="Spot">
+<meta name="description" content="Spot — Every Place Has a Story. A community for food, coffee and places.">
+<title>Spot | Every Place Has a Story</title>
+<link rel="manifest" href="manifest.webmanifest?v=spotbrand3202">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="application-name" content="ذواق">
-<link rel="icon" sizes="192x192" href="icon-192.png?v=3112">
-<link rel="apple-touch-icon" href="icon-180.png?v=3112">
+<meta name="application-name" content="Spot">
+<link rel="icon" sizes="192x192" href="icon-192.png?v=spotbrand3202">
+<link rel="apple-touch-icon" href="icon-180.png?v=spotbrand3202">
 <link rel="stylesheet" href="thawaq-v3.css?v=3112">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3"></script>
 <script defer src="config.js"></script>
-<script defer src="release-router.js?v=3200gate"></script>
+<script defer src="release-router.js?v=spotbrand3202"></script>
 </head>
 <body>
+<div class="spot-brand-intro" id="spotBrandIntro" aria-hidden="true"><div class="spot-brand-intro__circles"></div><div class="spot-brand-intro__content"><img class="spot-brand-intro__logo" src="./icon-192.png?v=spotbrand3202" alt=""><div class="spot-brand-intro__name">Spot</div><div class="spot-brand-intro__tagline" lang="en" dir="ltr">Every Place Has a Story</div></div></div>
+<script>
+(function(){
+ var screen=document.getElementById('spotBrandIntro');
+ if(!screen)return;
+ if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){screen.remove();return}
+ if(new URLSearchParams(location.search).has('share')){screen.remove();return}
+ window.setTimeout(function(){screen.classList.add('spot-brand-intro--end');window.setTimeout(function(){screen.remove()},300)},950);
+})();
+</script>
 <div class="preview-top hidden" id="previewTop" aria-hidden="true"></div>
 <div class="shell" id="shell">
   <aside class="rail" id="rail" aria-label="التنقل">
-    <div class="rail-logo"><img src="icon-192.png?v=3112" alt="ذواق"><span><strong>ذوّاق</strong><small>THAWAQ</small></span></div>
+    <div class="rail-logo"><img src="icon-192.png?v=spotbrand3202" alt="Spot"><span><strong>Spot</strong><small>SPOT</small></span></div>
     <nav class="rail-nav" id="railNav"></nav>
     <div class="rail-bottom"><span id="railSync">● مزامنة مباشرة</span><small>v3.1.2 · المجتمع</small></div>
   </aside>
   <div class="workspace">
     <header class="app-header" id="appHeader">
-      <div class="header-identity"><img class="header-logo" src="icon-192.png?v=3112" alt="شعار ذواق"><div><strong>ذوّاق <span class="latin">THAWAQ</span></strong><small id="headerSubtitle">تجارب تستحق التذكر</small></div></div>
+      <div class="header-identity"><img class="header-logo" src="icon-192.png?v=spotbrand3202" alt="Spot"><div><strong>Spot</strong><small id="headerSubtitle" lang="en" dir="ltr">Every Place Has a Story</small></div></div>
       <div class="header-tools"><span class="live-time" id="liveTime" aria-label="التاريخ والوقت"></span><button class="icon-button" id="refreshBtn" type="button" title="تحديث البيانات فقط" aria-label="تحديث البيانات"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.3"/><path d="M20 4v7h-7"/></svg></button><button class="icon-button hidden" type="button" id="spotInboxBtn" aria-label="Private messages">✉<span class="spot-inbox-badge hidden" id="spotInboxCount"></span></button><button class="icon-button hidden" type="button" id="spotLanguageBtn" aria-label="Language / اللغة">EN</button><button class="user-circle" id="avatarBtn" type="button" aria-label="حسابي">ذ</button></div>
       <small id="headerDateRow" aria-label="التاريخ والوقت"></small>
     </header>
     <main id="root" class="root" aria-live="polite"><div class="skeleton-page"><div class="skeleton wide"></div><div class="skeleton"></div><div class="skeleton"></div></div></main>
-    <footer class="app-footer"><span>صُنع لذكريات الطعم الحلوة</span><span>ذواق · v3.0.0</span></footer>
+    <footer class="app-footer"><span>صُنع لذكريات الطعم الحلوة</span><span>Spot · v3.1.2</span></footer>
   </div>
   <nav class="bottom-nav" id="bottomNav" aria-label="التنقل السفلي"></nav>
 </div>

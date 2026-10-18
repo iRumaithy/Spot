@@ -1,4 +1,4 @@
-/* THAWAQ release router: never pick a candidate from public assets until owner approves.
+/* SPOT release router: never pick a candidate from public assets until owner approves.
    Device upgrades only after explicit user choice, never via Refresh. */
 (()=>{'use strict';
  const STABLE='3.1.2',NEXT='3.2.0',DEVICE_KEY='thawaq-user-approved-version',SURL=window.APP_CONFIG?.SUPABASE_URL,KEY=window.APP_CONFIG?.SUPABASE_PUBLISHABLE_KEY;
@@ -12,8 +12,8 @@
  }
  const dismissed=()=>sessionStorage.getItem('thawaq-update-dismissed')==='1';
  function promptUpdate(version){
-  if(document.getElementById('thawaq-update-banner')||dismissed())return;
-  const panel=document.createElement('section');panel.id='thawaq-update-banner';panel.setAttribute('role','status');panel.dir='rtl';
+  if(document.getElementById('spot-update-banner')||dismissed())return;
+  const panel=document.createElement('section');panel.id='spot-update-banner';panel.setAttribute('role','status');panel.dir='rtl';
   panel.style.cssText='position:fixed;z-index:2147483000;bottom:calc(78px + env(safe-area-inset-bottom, 0px));left:12px;right:12px;max-width:520px;margin:0 auto;background:#fffdf8;color:#163c31;border:2px solid #bca782;border-radius:18px;padding:16px;box-shadow:0 14px 40px rgba(0,0,0,.22);font:500 14px system-ui,Tahoma,sans-serif;';
   panel.innerHTML=`<strong style="display:block;font-size:16px;margin-bottom:7px">تحديث Spot v${version} متاح</strong><div style="margin-bottom:12px">خذ نسخة احتياطية قبل تثبيت التحديث. لن يتم التثبيت إلا بموافقتك.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" data-update-action="backup" style="flex:1;border:1px solid #ccd3c8;padding:10px;border-radius:10px;background:#fff">نسخة احتياطية</button><button type="button" data-update-action="install" style="flex:1;padding:10px;border:none;border-radius:10px;background:#205541;color:white">تحديث الآن</button><button type="button" data-update-action="later" style="padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff">لاحقًا</button></div>`;
   panel.addEventListener('click',event=>{const act=event.target.closest('[data-update-action]')?.dataset.updateAction;
@@ -32,19 +32,19 @@
   const accepted=localStorage.getItem(DEVICE_KEY);
   const useCandidate=cmp(live,NEXT)>=0&&accepted===NEXT;
   const script=document.createElement('script');
-  script.src=useCandidate?'./spot-v3.2.js?v=3200slogan1':'./thawaq-v3.1.2.js?v=3112stable';script.defer=true;
+  script.src=useCandidate?'./spot-v3.2.js?v=spotbrand3202':'./thawaq-v3.1.2.js?v=spotbrand3202stable';script.defer=true;
   if(useCandidate){
-   document.querySelector('link[rel="manifest"]')?.setAttribute('href','./spot.webmanifest?v=3200');
+   document.querySelector('link[rel="manifest"]')?.setAttribute('href','./manifest.webmanifest?v=spotbrand3202');
    document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content','Spot');
    document.querySelector('meta[name="application-name"]')?.setAttribute('content','Spot');
    document.title='Spot | Your food community';
    const slogan=document.getElementById('headerSubtitle');if(slogan){slogan.textContent='Every Place Has a Story';slogan.lang='en';slogan.dir='ltr'}
    document.querySelectorAll('.header-identity strong,.rail-logo strong').forEach(n=>n.textContent='Spot');
    document.querySelectorAll('.rail-logo small,.latin').forEach(n=>n.textContent='SPOT');
-   const style=document.createElement('link');style.rel='stylesheet';style.href='./spot-v3.2.css?v=3200slogan1';document.head.appendChild(style);
+   const style=document.createElement('link');style.rel='stylesheet';style.href='./spot-v3.2.css?v=spotbrand3202';document.head.appendChild(style);
    await new Promise(resolve=>{const i18n=document.createElement('script');i18n.src='./spot-i18n.js?v=3200';i18n.onload=resolve;i18n.onerror=resolve;document.head.appendChild(i18n)});
   }
-  script.onerror=()=>{if(useCandidate){localStorage.removeItem(DEVICE_KEY);location.reload()}else console.error('تعذر تحميل ملفات ذواق')};
+  script.onerror=()=>{if(useCandidate){localStorage.removeItem(DEVICE_KEY);location.reload()}else console.error('تعذر تحميل ملفات Spot')};
   document.body.appendChild(script);
   if(cmp(live,NEXT)>=0&&!useCandidate)setTimeout(()=>promptUpdate(NEXT),1800);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpgrade()});
