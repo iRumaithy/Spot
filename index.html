@@ -23,7 +23,7 @@ if ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matche
 <link rel="stylesheet" href="thawaq-v3.css?v=3112">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3"></script>
 <script defer src="config.js"></script>
-<script defer src="release-router.js?v=3113gate1"></script>
+<script defer src="release-router.js?v=3200gate"></script>
 </head>
 <body>
 <div class="preview-top hidden" id="previewTop" aria-hidden="true"></div>
@@ -36,7 +36,7 @@ if ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matche
   <div class="workspace">
     <header class="app-header" id="appHeader">
       <div class="header-identity"><img class="header-logo" src="icon-192.png?v=3112" alt="شعار ذواق"><div><strong>ذوّاق <span class="latin">THAWAQ</span></strong><small id="headerSubtitle">تجارب تستحق التذكر</small></div></div>
-      <div class="header-tools"><span class="live-time" id="liveTime" aria-label="التاريخ والوقت"></span><button class="icon-button" id="refreshBtn" type="button" title="تحديث البيانات فقط" aria-label="تحديث البيانات"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.3"/><path d="M20 4v7h-7"/></svg></button><button class="user-circle" id="avatarBtn" type="button" aria-label="حسابي">ذ</button></div>
+      <div class="header-tools"><span class="live-time" id="liveTime" aria-label="التاريخ والوقت"></span><button class="icon-button" id="refreshBtn" type="button" title="تحديث البيانات فقط" aria-label="تحديث البيانات"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.3"/><path d="M20 4v7h-7"/></svg></button><button class="icon-button hidden" type="button" id="spotInboxBtn" aria-label="Private messages">✉<span class="spot-inbox-badge hidden" id="spotInboxCount"></span></button><button class="icon-button hidden" type="button" id="spotLanguageBtn" aria-label="Language / اللغة">EN</button><button class="user-circle" id="avatarBtn" type="button" aria-label="حسابي">ذ</button></div>
       <small id="headerDateRow" aria-label="التاريخ والوقت"></small>
     </header>
     <main id="root" class="root" aria-live="polite"><div class="skeleton-page"><div class="skeleton wide"></div><div class="skeleton"></div><div class="skeleton"></div></div></main>
