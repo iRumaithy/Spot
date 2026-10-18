@@ -20,11 +20,11 @@ if ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matche
 <meta name="application-name" content="Spot">
 <link rel="icon" sizes="192x192" href="icon-192.png?v=3113">
 <link rel="apple-touch-icon" href="icon-180.png?v=3113">
-<link rel="stylesheet" href="spot-v3.2.css?v=3200">
+<link rel="stylesheet" href="spot-v3.2.css?v=3200slogan1">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3"></script>
 <script defer src="config.js"></script>
 <script defer src="spot-i18n.js?v=3200"></script>
-<script defer src="spot-v3.2.js?v=3200"></script>
+<script defer src="spot-v3.2.js?v=3200slogan1"></script>
 </head>
 <body>
 <div class="preview-top" id="previewTop" aria-hidden="false">معاينة v3.2.0 للمالك فقط · لا تغيّر التطبيق الرسمي</div>
@@ -36,7 +36,7 @@ if ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matche
   </aside>
   <div class="workspace">
     <header class="app-header" id="appHeader">
-      <div class="header-identity"><img class="header-logo" src="icon-192.png?v=3113" alt="شعار Spot"><div><strong>Spot <span class="latin">SPOT</span></strong><small id="headerSubtitle">تجارب تستحق التذكر</small></div></div>
+      <div class="header-identity"><img class="header-logo" src="icon-192.png?v=3113" alt="شعار Spot"><div><strong>Spot <span class="latin">SPOT</span></strong><small id="headerSubtitle" lang="en" dir="ltr">Every Place Has a Story</small></div></div>
       <div class="header-tools"><span class="live-time" id="liveTime" aria-label="التاريخ والوقت"></span><button class="icon-button" id="refreshBtn" type="button" title="تحديث البيانات فقط" aria-label="تحديث البيانات"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.3"/><path d="M20 4v7h-7"/></svg></button><button class="icon-button hidden" type="button" id="spotInboxBtn" aria-label="الرسائل الخاصة" title="الرسائل الخاصة">✉<span class="spot-inbox-badge hidden" id="spotInboxCount"></span></button><button class="icon-button hidden" id="spotLanguageBtn" type="button" aria-label="Language / اللغة" title="تغيير اللغة">EN</button><button class="user-circle" id="avatarBtn" type="button" aria-label="حسابي">ذ</button></div>
       <small id="headerDateRow" aria-label="التاريخ والوقت"></small>
     </header>

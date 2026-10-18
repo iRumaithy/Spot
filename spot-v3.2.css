@@ -110,3 +110,36 @@ html[lang="en"] body,html[lang="en"] .root,html[lang="en"] .modal-dialog{directi
 html[lang="en"] .rail{border-right:1px solid #ebeee7;border-left:0}html[lang="en"] .header-tools{flex-direction:row}html[lang="en"] .spot-half-rating{direction:ltr}
 @media(max-width:760px){.spot-dm-layout{grid-template-columns:1fr}.spot-dm-peers,.spot-dm-room{min-height:unset}.spot-dm-peers{max-height:230px;overflow:auto}.spot-dm-bubbles{min-height:210px;max-height:43vh}.spot-half-rating{gap:4px}.spot-star-unit{width:37px;flex-basis:37px}.spot-star-glyph{font-size:33px}.header-tools{gap:4px}#spotLanguageBtn,#spotInboxBtn{width:35px;height:38px}.spot-dm-compose .btn{padding:10px}}
 @media(max-width:385px){.spot-half-rating{gap:2px}.spot-star-unit{width:34px;flex-basis:34px}}
+
+/* SPOT · refined gold brand signature. Small enough for iPhone header. */
+#headerSubtitle{
+ display:block;max-width:min(34vw,250px);overflow:hidden;text-overflow:ellipsis;
+ white-space:nowrap;font-family:system-ui,-apple-system,sans-serif;
+ font-size:11px;font-weight:650;letter-spacing:.035em;color:#b18b55;
+ direction:ltr;unicode-bidi:isolate;text-align:start;
+}
+.header-identity>div{min-width:0}
+@media(max-width:760px){
+ #headerSubtitle{max-width:clamp(126px,34vw,220px);font-size:9px;letter-spacing:.01em}
+}
+@media(max-width:390px){#headerSubtitle{max-width:126px;font-size:8.5px}}
+/* Brief launch greeting, with the exact icon already installed by the user. */
+.spot-brand-intro{
+ position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;
+ overflow:hidden;pointer-events:none;
+ background:radial-gradient(ellipse at 72% 13%,#42694f 0%,#2e513d 34%,#183a2f 82%,#112a24 100%);
+ opacity:1;transition:opacity .27s ease-out;
+}
+.spot-brand-intro--end{opacity:0}
+.spot-brand-intro__circles{
+ position:absolute;inset:-18%;border:1px solid rgba(232,194,128,.13);
+ border-radius:50%;width:135vw;height:135vw;max-width:920px;max-height:920px;
+ left:-20%;top:18%;pointer-events:none;
+ box-shadow:0 0 0 75px rgba(211,184,121,.025),0 0 0 150px rgba(211,184,121,.02);
+}
+.spot-brand-intro__content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:22px}
+.spot-brand-intro__logo{width:112px;height:112px;object-fit:cover;border-radius:25px;filter:drop-shadow(0 13px 21px rgba(0,0,0,.18))}
+.spot-brand-intro__name{margin-top:7px;font:750 37px/1.1 system-ui,-apple-system,sans-serif;letter-spacing:.06em;color:#fff9ec}
+.spot-brand-intro__tagline{font:600 12px/1.45 system-ui,-apple-system,sans-serif;letter-spacing:.12em;color:#e1c18d;white-space:nowrap}
+@media(max-width:390px){.spot-brand-intro__logo{width:100px;height:100px}.spot-brand-intro__tagline{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.spot-brand-intro{display:none!important}}

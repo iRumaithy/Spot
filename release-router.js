@@ -32,15 +32,16 @@
   const accepted=localStorage.getItem(DEVICE_KEY);
   const useCandidate=cmp(live,NEXT)>=0&&accepted===NEXT;
   const script=document.createElement('script');
-  script.src=useCandidate?'./spot-v3.2.js?v=3200':'./thawaq-v3.1.2.js?v=3112stable';script.defer=true;
+  script.src=useCandidate?'./spot-v3.2.js?v=3200slogan1':'./thawaq-v3.1.2.js?v=3112stable';script.defer=true;
   if(useCandidate){
    document.querySelector('link[rel="manifest"]')?.setAttribute('href','./spot.webmanifest?v=3200');
    document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content','Spot');
    document.querySelector('meta[name="application-name"]')?.setAttribute('content','Spot');
    document.title='Spot | Your food community';
+   const slogan=document.getElementById('headerSubtitle');if(slogan){slogan.textContent='Every Place Has a Story';slogan.lang='en';slogan.dir='ltr'}
    document.querySelectorAll('.header-identity strong,.rail-logo strong').forEach(n=>n.textContent='Spot');
    document.querySelectorAll('.rail-logo small,.latin').forEach(n=>n.textContent='SPOT');
-   const style=document.createElement('link');style.rel='stylesheet';style.href='./spot-v3.2.css?v=3200';document.head.appendChild(style);
+   const style=document.createElement('link');style.rel='stylesheet';style.href='./spot-v3.2.css?v=3200slogan1';document.head.appendChild(style);
    await new Promise(resolve=>{const i18n=document.createElement('script');i18n.src='./spot-i18n.js?v=3200';i18n.onload=resolve;i18n.onerror=resolve;document.head.appendChild(i18n)});
   }
   script.onerror=()=>{if(useCandidate){localStorage.removeItem(DEVICE_KEY);location.reload()}else console.error('تعذر تحميل ملفات ذواق')};

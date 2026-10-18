@@ -1,4 +1,4 @@
-const CACHE_NAME='thawaq-shell-v3.2-owner-gate1';
+const CACHE_NAME='thawaq-shell-v3.2-owner-gate2-slogan';
 const APP_SHELL=['./','./index.html','./config.js','./manifest.webmanifest?v=3112','./thawaq-v3.css?v=3112','./release-router.js?v=3200gate','./thawaq-v3.1.2.js?v=3112stable','./icon-180.png?v=3112','./icon-192.png?v=3112','./icon-512.png?v=3112','./icon-512-maskable.png?v=3112'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_SHELL)))});
 // Never call skipWaiting automatically; an explicit user action sends this message.
