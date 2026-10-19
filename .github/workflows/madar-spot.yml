@@ -1,35 +1,17 @@
-name: Spot — Madar approval
-run-name: Spot ${{ inputs.version }} — ${{ inputs.operation }}
+name: Spot — Madar automatic approval
+run-name: Spot — ${{ github.event_name }}
 
 on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '.github/**'
+      - 'scripts/**'
+      - '**.md'
+      - '**.txt'
+  schedule:
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
-    inputs:
-      operation:
-        description: submit = send for review / publish = deploy the approved commit
-        type: choice
-        options: [submit, publish]
-        required: true
-        default: submit
-      version:
-        description: Exact app version, such as 3.3.0
-        type: string
-        required: true
-      release_commit:
-        description: Full 40-character commit SHA; required for publish, blank = current commit for submit
-        type: string
-        required: false
-      title:
-        description: Release title (submit only)
-        type: string
-        required: false
-      changes:
-        description: Actual release changes (submit only)
-        type: string
-        required: false
-      preview_url:
-        description: HTTPS preview URL for owner review (submit only)
-        type: string
-        required: false
 
 permissions:
   contents: read
@@ -41,39 +23,64 @@ concurrency:
 env:
   OWNER_HUB_URL: ${{ vars.OWNER_HUB_URL }}
   OWNER_HUB_APP_ID: ${{ vars.OWNER_HUB_APP_ID }}
-  RELEASE_VERSION: ${{ inputs.version }}
-  RELEASE_COMMIT: ${{ inputs.release_commit || github.sha }}
 
 jobs:
-  submit:
-    if: inputs.operation == 'submit'
+  candidate:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ env.RELEASE_COMMIT }}
           persist-credentials: false
-
       - uses: actions/setup-node@v7
         with:
           node-version: '24'
           package-manager-cache: false
-
-      - name: Validate the selected source
-        run: node scripts/prepare-spot-site.mjs
-
-      - name: Submit the immutable candidate to Madar
-        run: node scripts/release-gate.mjs submit
+      - name: Automatically prepare private review from this exact commit
+        run: node scripts/madar-auto.mjs submit
         env:
           OWNER_HUB_TOKEN: ${{ secrets.OWNER_HUB_TOKEN }}
           OWNER_HUB_SITE_ACCESS: ${{ secrets.OWNER_HUB_SITE_ACCESS }}
-          RELEASE_TITLE: ${{ inputs.title }}
-          RELEASE_CHANGES: ${{ inputs.changes }}
-          RELEASE_PREVIEW_URL: ${{ inputs.preview_url }}
+
+  approved:
+    needs: candidate
+    if: always() && (needs.candidate.result == 'success' || github.event_name != 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    outputs:
+      ready: ${{ steps.release.outputs.ready }}
+      version: ${{ steps.release.outputs.version }}
+      commit: ${{ steps.release.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Allow a short review window after a new upload
+        if: github.event_name == 'push'
+        run: |
+          for attempt in $(seq 1 12); do
+            node scripts/madar-auto.mjs approved > /dev/null
+            if grep -q '^ready=true$' "$GITHUB_OUTPUT"; then break; fi
+            sleep 20
+          done
+        env:
+          OWNER_HUB_TOKEN: ${{ secrets.OWNER_HUB_TOKEN }}
+          OWNER_HUB_SITE_ACCESS: ${{ secrets.OWNER_HUB_SITE_ACCESS }}
+      - name: Get the latest exact approved release from Madar
+        id: release
+        run: node scripts/madar-auto.mjs approved
+        env:
+          OWNER_HUB_TOKEN: ${{ secrets.OWNER_HUB_TOKEN }}
+          OWNER_HUB_SITE_ACCESS: ${{ secrets.OWNER_HUB_SITE_ACCESS }}
 
   publish:
-    if: inputs.operation == 'publish'
+    needs: approved
+    if: always() && needs.approved.result == 'success' && needs.approved.outputs.ready == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -83,59 +90,47 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      RELEASE_VERSION: ${{ needs.approved.outputs.version }}
+      RELEASE_COMMIT: ${{ needs.approved.outputs.commit }}
     steps:
-      - name: Require an explicit reviewed commit
-        env:
-          INPUT_COMMIT: ${{ inputs.release_commit }}
-        run: node -e 'if(!/^[a-f0-9]{40}$/.test(process.env.INPUT_COMMIT||""))throw Error("Select the exact reviewed commit");if(process.env.OWNER_HUB_APP_ID!=="spot")throw Error("OWNER_HUB_APP_ID must be spot")'
-
       - uses: actions/checkout@v6
         with:
           ref: ${{ env.RELEASE_COMMIT }}
           persist-credentials: false
-
       - uses: actions/setup-node@v7
         with:
           node-version: '24'
           package-manager-cache: false
-
-      - name: Stop unless this exact commit is approved
+      - name: Require the exact reviewed commit
         run: node scripts/release-gate.mjs check
         env:
           OWNER_HUB_TOKEN: ${{ secrets.OWNER_HUB_TOKEN }}
           OWNER_HUB_SITE_ACCESS: ${{ secrets.OWNER_HUB_SITE_ACCESS }}
-
-      - name: Preflight Spot routing and backend without publishing
+      - name: Verify version routing and backend before publication
         run: node scripts/release-gate.mjs preflight-spot
         env:
           OWNER_HUB_TOKEN: ${{ secrets.OWNER_HUB_TOKEN }}
           OWNER_HUB_SITE_ACCESS: ${{ secrets.OWNER_HUB_SITE_ACCESS }}
-
-      - name: Prepare the approved files
+      - name: Prepare the same approved files
         run: node scripts/prepare-spot-site.mjs
-
       - uses: actions/configure-pages@v5
-
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
-
-      - name: Recheck approval immediately before deployment
+      - name: Recheck approval immediately before Pages
         run: node scripts/release-gate.mjs check
         env:
           OWNER_HUB_TOKEN: ${{ secrets.OWNER_HUB_TOKEN }}
           OWNER_HUB_SITE_ACCESS: ${{ secrets.OWNER_HUB_SITE_ACCESS }}
-
-      - name: Deploy the approved files to GitHub Pages
+      - name: Deploy approved files
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Verify that Pages serves the same commit
+      - name: Verify Pages serves the exact approved commit
+        run: node scripts/verify-spot-deployment.mjs
         env:
           SITE_URL: ${{ steps.deployment.outputs.page_url }}
-        run: node scripts/verify-spot-deployment.mjs
-
-      - name: Recheck and activate the approved version in Spot
+      - name: Activate release for Spot users and record publication
         run: node scripts/release-gate.mjs publish-spot
         env:
           OWNER_HUB_TOKEN: ${{ secrets.OWNER_HUB_TOKEN }}
