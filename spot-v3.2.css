@@ -140,3 +140,23 @@ html[lang="en"] .rail{border-right:1px solid #ebeee7;border-left:0}html[lang="en
 .spot-install-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
 .spot-install-actions>.btn{flex:1 1 120px}
 body.dark .spot-owner-install{background:#1f3429;border-color:#4a6854}
+
+/* Spot 3.3 — fast, accessible post reactions and community-wide people search */
+.spot-post-like{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:39px;border:1px solid #d9e6da;border-radius:13px;background:#f5f8f4;color:#506a59;padding:7px 11px;font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .13s ease,border-color .13s ease,color .13s ease}
+.spot-post-like svg{flex:none;transition:transform .13s ease}
+.spot-post-like svg path{fill:transparent;transition:fill .13s ease}
+.spot-post-like.is-liked{color:#ba5e68;border-color:#edc4c8;background:#fff2f2}
+.spot-post-like.is-liked svg path{fill:currentColor;stroke:currentColor}
+.spot-post-like:active svg{transform:scale(1.15)}
+.spot-post-like:focus-visible{outline:3px solid #86ae94;outline-offset:3px}
+.spot-like-number{font-variant-numeric:tabular-nums;font-size:13px;min-width:1ch}
+.spot-like-label{font-size:11px}
+.spot-community-search{width:100%;margin-bottom:16px;margin-top:6px}
+.spot-community-search input{height:50px;border:1px solid #cadbcf;border-radius:16px;font-size:14px}
+.spot-find-people{flex-shrink:0}
+html[lang="en"] .spot-community-search svg{right:auto;left:14px}
+html[lang="en"] .spot-community-search input{padding-left:43px;padding-right:14px}
+body.dark .spot-post-like{background:#273d31;color:#c2dbc5;border-color:#42634b}
+body.dark .spot-post-like.is-liked{background:#482d34;color:#f5acb4;border-color:#86545f}
+@media(max-width:760px){.spot-post-like{padding:9px 12px;min-width:94px}.post-bottom{align-items:center;gap:6px}.post-bottom .spot-post-like{flex:0 0 auto}.spot-find-people{width:35px;height:38px}.header-tools{gap:4px}}
+@media(prefers-reduced-motion:reduce){.spot-post-like,.spot-post-like svg,.spot-post-like svg path{transition:none}}

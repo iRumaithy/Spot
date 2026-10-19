@@ -1,5 +1,5 @@
-const CACHE_NAME='spot-shell-v3.2.1-signup321';
-const APP_SHELL=['./','./index.html','./config.js','./manifest.webmanifest?v=spotbrand3202','./thawaq-v3.css?v=3112','./release-router.js?v=signup321','./thawaq-v3.1.2.js?v=spotbrand3202stable','./spot-v3.2.1.js?v=signup321','./owner-preview-spot321.html','./icon-180.png?v=spotbrand3202','./icon-192.png?v=spotbrand3202','./icon-512.png?v=spotbrand3202','./icon-512-maskable.png?v=spotbrand3202'];
+const CACHE_NAME='spot-shell-v3.3.0-auth3301';
+const APP_SHELL=['./','./index.html','./config.js','./manifest.webmanifest?v=spotbrand3202','./thawaq-v3.css?v=3112','./release-router.js?v=auth3301','./thawaq-v3.1.2.js?v=spotbrand3202stable','./spot-v3.2.1.js?v=signup321','./spot-v3.3.0.js?v=auth3301','./owner-preview-spot330.html','./owner-preview-spot321.html','./icon-180.png?v=spotbrand3202','./icon-192.png?v=spotbrand3202','./icon-512.png?v=spotbrand3202','./icon-512-maskable.png?v=spotbrand3202'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_SHELL)))});
 // Never call skipWaiting automatically; an explicit user action sends this message.
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});

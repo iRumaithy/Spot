@@ -1,7 +1,7 @@
 /* SPOT release router: never pick a candidate from public assets until owner approves.
    Device upgrades only after explicit user choice, never via Refresh. */
 (()=>{'use strict';
- const STABLE='3.2.0',NEXT='3.2.1',LEGACY='3.1.2',DEVICE_KEY='thawaq-user-approved-version',SURL=window.APP_CONFIG?.SUPABASE_URL,KEY=window.APP_CONFIG?.SUPABASE_PUBLISHABLE_KEY;
+ const STABLE='3.2.1',NEXT='3.3.0',LEGACY='3.1.2',DEVICE_KEY='thawaq-user-approved-version',SURL=window.APP_CONFIG?.SUPABASE_URL,KEY=window.APP_CONFIG?.SUPABASE_PUBLISHABLE_KEY;
  let shown=false,seenPublished='';
  const cmp=(a,b)=>{const aa=(a||'').split('.').map(Number),bb=(b||'').split('.').map(Number);for(let i=0;i<Math.max(aa.length,bb.length);i++){const d=(aa[i]||0)-(bb[i]||0);if(d)return d}return 0};
  async function published(){
@@ -36,7 +36,7 @@
   const useCandidate=cmp(live,NEXT)>=0&&(accepted===NEXT||!accepted);
   const useLegacy=accepted===LEGACY;
   const script=document.createElement('script');
-  script.src=useCandidate?'./spot-v3.2.1.js?v=signup321':useLegacy?'./thawaq-v3.1.2.js?v=3112stable':'./spot-v3.2.js?v=spotpath3204';script.defer=true;
+  script.src=useCandidate?'./spot-v3.3.0.js?v=auth3301':useLegacy?'./thawaq-v3.1.2.js?v=3112stable':'./spot-v3.2.1.js?v=signup321';script.defer=true;
   if(!useLegacy){
    document.querySelector('link[rel="manifest"]')?.setAttribute('href','./manifest.webmanifest?v=spotbrand3202');
    document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content','Spot');
@@ -45,7 +45,7 @@
    const slogan=document.getElementById('headerSubtitle');if(slogan){slogan.textContent='Every Place Has a Story';slogan.lang='en';slogan.dir='ltr'}
    document.querySelectorAll('.header-identity strong,.rail-logo strong').forEach(n=>n.textContent='Spot');
    document.querySelectorAll('.rail-logo small,.latin').forEach(n=>n.textContent='SPOT');
-   const style=document.createElement('link');style.rel='stylesheet';style.href='./spot-v3.2.css?v=signup321';document.head.appendChild(style);
+   const style=document.createElement('link');style.rel='stylesheet';style.href='./spot-v3.2.css?v=auth3301';document.head.appendChild(style);
    await new Promise(resolve=>{const i18n=document.createElement('script');i18n.src='./spot-i18n.js?v=signup321';i18n.onload=resolve;i18n.onerror=resolve;document.head.appendChild(i18n)});
   }
   script.onerror=()=>{console.error('تعذر تحميل إصدار Spot المطلوب');if(useCandidate&&accepted===NEXT){localStorage.removeItem(DEVICE_KEY);location.reload()}};
