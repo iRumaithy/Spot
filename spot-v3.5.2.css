@@ -1,0 +1,41 @@
+@import url('./spot-v3.5.1.css?v=studio3511');
+.spot-studio-shell{position:relative}
+.spot-editor-dock{position:relative;z-index:12;padding:8px 12px 0;border-top:1px solid #b4c59d20;background:linear-gradient(180deg,#193324,#10281c)}
+.spot-editor-dock .spot-overlay-toolbar{grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.spot-editor-dock .spot-overlay-toolbar>button{display:flex;flex-direction:column;gap:2px;min-height:51px;border:1px solid transparent;background:transparent;border-radius:13px;padding:5px 3px;color:#eadbb7;font-size:11px}
+.spot-editor-dock .spot-overlay-toolbar>button>b{height:23px;font:500 24px/23px system-ui}
+.spot-editor-dock .spot-overlay-toolbar>button>small{font:500 10px system-ui;color:#ccdac2}
+.spot-editor-dock .spot-overlay-toolbar>button>svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.spot-editor-dock .spot-overlay-toolbar>button:hover,.spot-editor-dock .spot-overlay-toolbar>button[aria-pressed=true]{background:#dec7971e;border-color:#dec79766}
+.spot-editor-dock .spot-overlay-hint{font-size:9px;margin:4px 0 7px;color:#b2c1a7}
+.spot-editor-sheet{position:absolute;inset-inline:8px;bottom:calc(100% + 7px);max-height:min(48dvh,390px);display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;background:#183725f5;color:#f5edd9;border:1px solid #a3b68d65;border-radius:20px;box-shadow:0 15px 40px #0008;backdrop-filter:blur(18px);padding:12px}
+.spot-editor-sheet>header{display:flex;align-items:center;justify-content:space-between;flex:none;gap:12px;margin-bottom:10px}
+.spot-editor-sheet>header>b{font-size:13px;letter-spacing:.01em}.spot-editor-sheet>header>button{border:1px solid #d9c29855;border-radius:12px;padding:7px 13px;color:#f7e4b5;background:#e0c79612;font-size:11px;min-height:35px}
+.spot-editor-sheet .spot-overlay-panel{padding:0;overflow-y:auto}.spot-editor-sheet .spot-overlay-edit-row:last-child{margin-bottom:0}.spot-editor-sheet .spot-overlay-edit-row>input{min-width:60px}
+.spot-emoji-search{display:flex;gap:5px;flex:none;margin-bottom:9px;min-width:0}
+.spot-emoji-search input{box-sizing:border-box;min-width:0;width:0;flex:1.2;border:1px solid #88a27d55;border-radius:10px;background:#10291a;color:white;padding:8px;font-size:16px;line-height:1.4}
+.spot-emoji-search input#spotCustomEmoji{flex:1}.spot-emoji-search input::placeholder{font-size:10px;color:#a9bc9d}
+.spot-emoji-search>button,.spot-emoji-categories>button,.spot-draw-tools>button,.spot-draw-history>button,#spotEmojiMore>button{border:1px solid #b4c69c33;border-radius:10px;background:#244631;color:#eee6cc;padding:7px 9px;min-height:33px;font:500 10px system-ui;white-space:nowrap}
+.spot-emoji-categories{display:flex;gap:6px;overflow-x:auto;flex:none;scrollbar-width:none;padding-bottom:8px}
+.spot-emoji-categories>button{font-size:18px;padding:5px 8px;min-width:35px}.spot-emoji-categories>button:first-child{font-size:10px}.spot-emoji-categories>button[aria-pressed=true]{border-color:#e2c58c;background:#8d794c55}
+.spot-emoji-results{overflow-y:auto;overscroll-behavior:contain;min-height:70px;max-height:205px;flex:1}.spot-emoji-results>p{font-size:11px;line-height:1.7;color:#cad6bd;padding:12px;text-align:center}
+.spot-emoji-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px}
+.spot-emoji-grid>button{min-width:0;min-height:39px;padding:2px;background:transparent;border:0;border-radius:10px;font:26px/1.3 'Apple Color Emoji','Segoe UI Emoji',sans-serif;touch-action:manipulation}
+.spot-emoji-grid>button:hover{background:#d8c19320}
+#spotEmojiMore{flex:none;text-align:center}#spotEmojiMore>button{margin-top:6px;width:100%}#spotEmojiCount{flex:none;font:9px system-ui;color:#b0c1a0;text-align:center;margin-top:6px}
+.spot-story-drawing{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;touch-action:none;overflow:visible}
+.spot-story-decorations{z-index:3}.spot-story-canvas.is-drawing>.spot-story-drawing{pointer-events:all;cursor:crosshair}.spot-story-canvas.is-drawing .spot-story-decoration{pointer-events:none!important}
+.spot-story-canvas:has(.is-editable){touch-action:none}
+.spot-draw-tools{display:flex;align-items:center;gap:6px;flex:none}.spot-draw-tools>button[aria-pressed=true]{border-color:#e2c58c;background:#8d794c55}
+.spot-draw-tools>label{display:flex;flex:1;align-items:center;gap:6px;font-size:9px;color:#d4ddc8;min-width:0}.spot-draw-tools input{min-width:30px;width:100%;accent-color:#dec38b;touch-action:pan-x}
+.spot-draw-colors{display:flex;justify-content:space-between;align-items:center;gap:7px;padding:15px 2px}
+.spot-draw-colors>button{width:25px;height:25px;border:2px solid #7d9272;border-radius:50%;outline-offset:3px;padding:0}.spot-draw-colors>button[aria-pressed=true]{outline:2px solid #e9ce91}
+.spot-draw-history{display:flex;gap:8px;justify-content:flex-end}.spot-draw-history>button:disabled{opacity:.3}
+.spot-camera-help-button{display:block;border:0;background:none;color:#b7c6a5;margin:10px auto 0;padding:4px;font:10px system-ui;text-decoration:underline;text-underline-offset:3px}
+.spot-camera-permission-help{position:absolute;inset-inline:18px;top:20%;z-index:40;padding:23px;border-radius:22px;background:#f3efe2;color:#173f2b;border:1px solid #d7c398;box-shadow:0 0 0 100vmax #05120bba}
+.spot-camera-permission-help>b{font-size:19px}.spot-camera-permission-help>p{font-size:13px;line-height:1.9}.spot-camera-permission-help>button{display:block;width:100%;padding:12px;border:0;border-radius:12px;background:#234f38;color:#fff7e2;font-size:14px}
+@media(max-width:350px){.spot-editor-sheet{padding:9px;inset-inline:4px}.spot-emoji-grid>button{font-size:23px;min-height:35px}.spot-draw-tools{gap:4px}.spot-draw-tools>button{padding-inline:6px}.spot-draw-colors{gap:5px}.spot-draw-colors>button{width:23px;height:23px}}
+@media(max-height:650px){.spot-editor-sheet{max-height:47dvh}.spot-emoji-results{max-height:120px}.spot-studio-shell.is-editing{overflow-y:visible}.spot-studio-shell.is-editing .spot-camera-stage{flex:1;min-height:100px}}
+
+.spot-story-nav,.spot-story-account-nav{direction:ltr}.spot-story-nav>button,.spot-story-account-nav>button{direction:rtl}
+.spot-story-viewer-v2 .spot-story-media[data-direction="1"] .spot-story-canvas{animation:spot-story-back .13s ease-out}.spot-story-viewer-v2 .spot-story-media[data-direction="-1"] .spot-story-canvas{animation:spot-story-next .13s ease-out}

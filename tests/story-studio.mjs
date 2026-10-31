@@ -2,7 +2,7 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-const source=readFileSync(new URL('../spot-v3.5.1.js',import.meta.url),'utf8');
+const source=readFileSync(new URL('../spot-v3.5.2.js',import.meta.url),'utf8');
 function fn(name){const start=source.indexOf('function '+name+'(');assert.ok(start>=0);let brace=source.indexOf('{',start),depth=1,i=brace+1;for(;depth&&i<source.length;i++){if(source[i]==='{')depth++;if(source[i]==='}')depth--}return source.slice(start,i)}
 test('only the owner edits a review, including when current account is administrator',()=>{const c={state:{me:{id:'a',role:'admin'}}};vm.runInNewContext(fn('own')+';globalThis.owns=own',c);assert.equal(c.owns({owner_id:'b'}),false);assert.equal(c.owns({owner_id:'a'}),true);assert.equal(c.owns(undefined),false);c.state.me=null;assert.equal(c.owns({owner_id:'a'}),false)});
 test('story time includes clock and source labels never invent origin for older stories',()=>{const c={window:{SPOT_I18N:{language:'ar'}}};vm.runInNewContext(fn('spotStoryTime')+';globalThis.clock=spotStoryTime',c);assert.match(c.clock('2026-10-31T11:20:00Z'),/\d.*[:٫].*\d/);assert.equal(c.clock('bad-date'),'');vm.runInNewContext(fn('spotSourceLabel')+';globalThis.label=spotSourceLabel',c);assert.equal(c.label('album'),'مرفوعة من ألبوم الصور');assert.equal(c.label('camera'),'التُقطت بكاميرا Spot');assert.equal(c.label('unknown'),'')});
