@@ -4,3 +4,5 @@ revoke all on public.spot_stories, public.spot_story_views, public.spot_follow_r
 grant select,insert,delete on public.spot_stories to authenticated;
 grant select,insert on public.spot_story_views to authenticated;
 grant select on public.spot_follow_requests to authenticated;
+revoke all on function public.spot_request_follow(uuid), public.spot_resolve_follow(uuid,boolean), private.spot_request_follow(uuid), private.spot_resolve_follow(uuid,boolean) from public, anon;
+grant execute on function public.spot_request_follow(uuid), public.spot_resolve_follow(uuid,boolean), private.spot_request_follow(uuid), private.spot_resolve_follow(uuid,boolean) to authenticated;
