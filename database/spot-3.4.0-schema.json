@@ -1,0 +1,547 @@
+{
+  "tables": [
+    {
+      "columns": [
+        {
+          "type": "uuid",
+          "column": "requester_id",
+          "default": null,
+          "nullable": "NO"
+        },
+        {
+          "type": "uuid",
+          "column": "recipient_id",
+          "default": null,
+          "nullable": "NO"
+        },
+        {
+          "type": "timestamp with time zone",
+          "column": "created_at",
+          "default": "now()",
+          "nullable": "NO"
+        }
+      ],
+      "tablename": "spot_follow_requests",
+      "rowsecurity": true
+    },
+    {
+      "columns": [
+        {
+          "type": "uuid",
+          "column": "id",
+          "default": "gen_random_uuid()",
+          "nullable": "NO"
+        },
+        {
+          "type": "uuid",
+          "column": "owner_id",
+          "default": null,
+          "nullable": "NO"
+        },
+        {
+          "type": "text",
+          "column": "media_path",
+          "default": null,
+          "nullable": "NO"
+        },
+        {
+          "type": "text",
+          "column": "media_type",
+          "default": null,
+          "nullable": "NO"
+        },
+        {
+          "type": "text",
+          "column": "caption",
+          "default": "''::text",
+          "nullable": "NO"
+        },
+        {
+          "type": "timestamp with time zone",
+          "column": "created_at",
+          "default": "now()",
+          "nullable": "NO"
+        },
+        {
+          "type": "timestamp with time zone",
+          "column": "expires_at",
+          "default": "(now() + '24:00:00'::interval)",
+          "nullable": "NO"
+        }
+      ],
+      "tablename": "spot_stories",
+      "rowsecurity": true
+    },
+    {
+      "columns": [
+        {
+          "type": "uuid",
+          "column": "story_id",
+          "default": null,
+          "nullable": "NO"
+        },
+        {
+          "type": "uuid",
+          "column": "viewer_id",
+          "default": null,
+          "nullable": "NO"
+        },
+        {
+          "type": "timestamp with time zone",
+          "column": "viewed_at",
+          "default": "now()",
+          "nullable": "NO"
+        }
+      ],
+      "tablename": "spot_story_views",
+      "rowsecurity": true
+    }
+  ],
+  "buckets": [
+    {
+      "id": "spot-stories",
+      "public": false,
+      "file_size_limit": 31457280,
+      "allowed_mime_types": [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "video/mp4",
+        "video/quicktime",
+        "video/webm"
+      ]
+    },
+    {
+      "id": "spot-private",
+      "public": false,
+      "file_size_limit": 16777216,
+      "allowed_mime_types": [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/heic",
+        "image/heif"
+      ]
+    }
+  ],
+  "release": {
+    "stable_version": "3.3.0",
+    "candidate_available": false
+  },
+  "policies": [
+    {
+      "cmd": "SELECT",
+      "qual": "(viewer_id = ( SELECT auth.uid() AS uid))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "spot_story_views",
+      "permissive": "PERMISSIVE",
+      "policyname": "Own seen state",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "places",
+      "permissive": "PERMISSIVE",
+      "policyname": "Place owner insert",
+      "schemaname": "public",
+      "with_check": "private.can_manage_owner(owner_id)"
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "private.can_manage_owner(owner_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "places",
+      "permissive": "PERMISSIVE",
+      "policyname": "Place owner update",
+      "schemaname": "public",
+      "with_check": "private.can_manage_owner(owner_id)"
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "private.can_manage_owner(owner_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "places",
+      "permissive": "PERMISSIVE",
+      "policyname": "Place owner delete",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "private.can_manage_owner(owner_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "items",
+      "permissive": "PERMISSIVE",
+      "policyname": "Item owner delete",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "visits",
+      "permissive": "PERMISSIVE",
+      "policyname": "Visit owner insert",
+      "schemaname": "public",
+      "with_check": "(private.can_manage_owner(owner_id) AND (EXISTS ( SELECT 1\n   FROM places p\n  WHERE ((p.id = visits.place_id) AND (p.owner_id = p.owner_id)))))"
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "private.can_manage_owner(owner_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "visits",
+      "permissive": "PERMISSIVE",
+      "policyname": "Visit owner update",
+      "schemaname": "public",
+      "with_check": "(private.can_manage_owner(owner_id) AND (EXISTS ( SELECT 1\n   FROM places p\n  WHERE ((p.id = visits.place_id) AND (p.owner_id = p.owner_id)))))"
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "private.can_manage_owner(owner_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "visits",
+      "permissive": "PERMISSIVE",
+      "policyname": "Visit owner delete",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "items",
+      "permissive": "PERMISSIVE",
+      "policyname": "Item owner insert",
+      "schemaname": "public",
+      "with_check": "(private.can_manage_owner(owner_id) AND (EXISTS ( SELECT 1\n   FROM visits v\n  WHERE ((v.id = items.visit_id) AND (v.place_id = v.place_id) AND (v.owner_id = v.owner_id)))))"
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "private.can_manage_owner(owner_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "items",
+      "permissive": "PERMISSIVE",
+      "policyname": "Item owner update",
+      "schemaname": "public",
+      "with_check": "(private.can_manage_owner(owner_id) AND (EXISTS ( SELECT 1\n   FROM visits v\n  WHERE ((v.id = items.visit_id) AND (v.place_id = v.place_id) AND (v.owner_id = v.owner_id)))))"
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "spot_story_views",
+      "permissive": "PERMISSIVE",
+      "policyname": "Mark visible story seen",
+      "schemaname": "public",
+      "with_check": "((viewer_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM spot_stories s\n  WHERE (s.id = spot_story_views.story_id))))"
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "objects",
+      "permissive": "PERMISSIVE",
+      "policyname": "Spot story upload",
+      "schemaname": "storage",
+      "with_check": "((bucket_id = 'spot-stories'::text) AND ((storage.foldername(name))[1] = (( SELECT auth.uid() AS uid))::text) AND private.can_manage_owner(( SELECT auth.uid() AS uid)))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "((EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = social_follows.follower_id) AND p.is_active))) AND (EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = social_follows.followed_id) AND p.is_active))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "social_follows",
+      "permissive": "PERMISSIVE",
+      "policyname": "Active people can see follows",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "(follower_id = ( SELECT auth.uid() AS uid))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "social_follows",
+      "permissive": "PERMISSIVE",
+      "policyname": "Own follow prefs",
+      "schemaname": "public",
+      "with_check": "((follower_id = ( SELECT auth.uid() AS uid)) AND (follower_id <> followed_id))"
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "(follower_id = ( SELECT auth.uid() AS uid))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "social_follows",
+      "permissive": "PERMISSIVE",
+      "policyname": "Unfollow a member",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "((bucket_id = 'spot-stories'::text) AND (((storage.foldername(name))[1] = (( SELECT auth.uid() AS uid))::text) OR (EXISTS ( SELECT 1\n   FROM spot_stories s\n  WHERE (s.media_path = objects.name)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "objects",
+      "permissive": "PERMISSIVE",
+      "policyname": "Spot story read",
+      "schemaname": "storage",
+      "with_check": null
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "((bucket_id = 'spot-stories'::text) AND ((storage.foldername(name))[1] = (( SELECT auth.uid() AS uid))::text))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "objects",
+      "permissive": "PERMISSIVE",
+      "policyname": "Spot story delete",
+      "schemaname": "storage",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "objects",
+      "permissive": "PERMISSIVE",
+      "policyname": "Spot private upload",
+      "schemaname": "storage",
+      "with_check": "((bucket_id = 'spot-private'::text) AND ((storage.foldername(name))[1] = (( SELECT auth.uid() AS uid))::text) AND private.can_manage_owner(( SELECT auth.uid() AS uid)))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "((( SELECT auth.uid() AS uid) = requester_id) OR (( SELECT auth.uid() AS uid) = recipient_id))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "spot_follow_requests",
+      "permissive": "PERMISSIVE",
+      "policyname": "Participants read requests",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "private.spot_can_view_content(owner_id)",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "tablename": "places",
+      "permissive": "PERMISSIVE",
+      "policyname": "Places public read",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "private.spot_can_view_content(owner_id)",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "tablename": "items",
+      "permissive": "PERMISSIVE",
+      "policyname": "Items public read",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "private.spot_can_view_content(owner_id)",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "tablename": "visits",
+      "permissive": "PERMISSIVE",
+      "policyname": "Visits public read",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "private.spot_can_view_content(owner_id)",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "tablename": "social_posts",
+      "permissive": "PERMISSIVE",
+      "policyname": "Published visits public",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "social_follows",
+      "permissive": "PERMISSIVE",
+      "policyname": "Follow an active user",
+      "schemaname": "public",
+      "with_check": "((follower_id = ( SELECT auth.uid() AS uid)) AND (follower_id <> followed_id) AND (EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = social_follows.follower_id) AND p.is_active))) AND (EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = social_follows.followed_id) AND p.is_active AND (NOT p.is_private)))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "((expires_at > now()) AND private.spot_can_view_content(owner_id))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "spot_stories",
+      "permissive": "PERMISSIVE",
+      "policyname": "Visible active stories",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "spot_stories",
+      "permissive": "PERMISSIVE",
+      "policyname": "Own story insert",
+      "schemaname": "public",
+      "with_check": "((owner_id = ( SELECT auth.uid() AS uid)) AND private.can_manage_owner(owner_id) AND ((created_at >= (now() - '00:00:10'::interval)) AND (created_at <= (now() + '00:00:10'::interval))) AND (EXISTS ( SELECT 1\n   FROM storage.objects o\n  WHERE ((o.bucket_id = 'spot-stories'::text) AND (o.name = spot_stories.media_path)))))"
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "(owner_id = ( SELECT auth.uid() AS uid))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "spot_stories",
+      "permissive": "PERMISSIVE",
+      "policyname": "Own story delete",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "((bucket_id = 'spot-private'::text) AND (EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE (((p.id)::text = (storage.foldername(objects.name))[1]) AND private.spot_can_view_content(p.id)))))",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "tablename": "objects",
+      "permissive": "PERMISSIVE",
+      "policyname": "Spot private read",
+      "schemaname": "storage",
+      "with_check": null
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "((bucket_id = 'spot-private'::text) AND ((storage.foldername(name))[1] = (( SELECT auth.uid() AS uid))::text))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "objects",
+      "permissive": "PERMISSIVE",
+      "policyname": "Spot private delete",
+      "schemaname": "storage",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "objects",
+      "permissive": "RESTRICTIVE",
+      "policyname": "Spot protect private uploads",
+      "schemaname": "storage",
+      "with_check": "((bucket_id <> 'blog-media'::text) OR ((storage.foldername(name))[2] = 'avatars'::text) OR (NOT (EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.is_private)))))"
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "true",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "objects",
+      "permissive": "RESTRICTIVE",
+      "policyname": "Spot protect private replacements",
+      "schemaname": "storage",
+      "with_check": "((bucket_id <> 'blog-media'::text) OR ((storage.foldername(name))[2] = 'avatars'::text) OR (NOT (EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.is_private)))))"
+    }
+  ],
+  "functions": [
+    {
+      "name": "spot_can_view_content",
+      "schema": "private",
+      "definition": "CREATE OR REPLACE FUNCTION private.spot_can_view_content(target uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n select exists(select 1 from public.profiles p where p.id=target and p.is_active and\n (not p.is_private or p.id=(select auth.uid()) or\n (exists(select 1 from public.profiles me where me.id=(select auth.uid()) and me.is_active) and\n exists(select 1 from public.social_follows f where f.followed_id=target and f.follower_id=(select auth.uid())))));\n$function$\n"
+    },
+    {
+      "name": "spot_follow_identity",
+      "schema": "private",
+      "definition": "CREATE OR REPLACE FUNCTION private.spot_follow_identity()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO ''\nAS $function$\nbegin\n if new.follower_id<>old.follower_id or new.followed_id<>old.followed_id then raise exception 'Follow identity is immutable'; end if;\n return new;\nend $function$\n"
+    },
+    {
+      "name": "spot_guard_privacy",
+      "schema": "private",
+      "definition": "CREATE OR REPLACE FUNCTION private.spot_guard_privacy()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO ''\nAS $function$\nbegin\n if new.is_private is distinct from old.is_private and coalesce(auth.jwt()->>'role','')<>'service_role' then raise exception 'Use privacy settings endpoint'; end if;\n return new;\nend $function$\n"
+    },
+    {
+      "name": "spot_request_follow",
+      "schema": "public",
+      "definition": "CREATE OR REPLACE FUNCTION public.spot_request_follow(target uuid)\n RETURNS text\n LANGUAGE sql\n SET search_path TO ''\nAS $function$select private.spot_request_follow(target)$function$\n"
+    },
+    {
+      "name": "spot_request_follow",
+      "schema": "private",
+      "definition": "CREATE OR REPLACE FUNCTION private.spot_request_follow(target uuid)\n RETURNS text\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare me uuid:=(select auth.uid()); locked public.profiles; event text;\nbegin\n if me is null or me=target or not exists(select 1 from public.profiles where id=me and is_active) then raise exception 'Unauthorized'; end if;\n select * into locked from public.profiles where id=target and is_active for update;\n if not found then raise exception 'Account unavailable'; end if;\n if exists(select 1 from public.social_follows where follower_id=me and followed_id=target) then\n  delete from public.social_follows where follower_id=me and followed_id=target; return 'unfollowed';\n end if;\n if exists(select 1 from public.spot_follow_requests where requester_id=me and recipient_id=target) then\n  delete from public.spot_follow_requests where requester_id=me and recipient_id=target; return 'cancelled';\n end if;\n if locked.is_private then\n  insert into public.spot_follow_requests(requester_id,recipient_id) values(me,target);\n  event:='request:'||me||':'||target||':'||gen_random_uuid();\n  insert into public.spot_activity_notifications(recipient_id,actor_id,kind,event_key) values(target,me,'follow_request',event);\n  insert into public.spot_push_events(recipient_id,actor_id,kind,event_key) values(target,me,'follow_request',event);\n  return 'requested';\n end if;\n insert into public.social_follows(follower_id,followed_id) values(me,target); return 'following';\nend $function$\n"
+    },
+    {
+      "name": "spot_resolve_follow",
+      "schema": "public",
+      "definition": "CREATE OR REPLACE FUNCTION public.spot_resolve_follow(requester uuid, accept_request boolean)\n RETURNS void\n LANGUAGE sql\n SET search_path TO ''\nAS $function$select private.spot_resolve_follow(requester,accept_request)$function$\n"
+    },
+    {
+      "name": "spot_resolve_follow",
+      "schema": "private",
+      "definition": "CREATE OR REPLACE FUNCTION private.spot_resolve_follow(requester uuid, accept_request boolean)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare me uuid:=(select auth.uid()); event text;\nbegin\n if me is null or not exists(select 1 from public.profiles where id=me and is_active) then raise exception 'Unauthorized'; end if;\n perform 1 from public.profiles where id=me for update;\n perform 1 from public.spot_follow_requests where requester_id=requester and recipient_id=me for update;\n if not found then raise exception 'Request unavailable'; end if;\n delete from public.spot_follow_requests where requester_id=requester and recipient_id=me;\n if accept_request then\n  if not exists(select 1 from public.profiles where id=requester and is_active) then raise exception 'Account unavailable'; end if;\n  insert into public.social_follows(follower_id,followed_id) values(requester,me) on conflict do nothing;\n  event:='accepted:'||requester||':'||me||':'||gen_random_uuid();\n  insert into public.spot_activity_notifications(recipient_id,actor_id,kind,event_key) values(requester,me,'follow_accepted',event);\n  insert into public.spot_push_events(recipient_id,actor_id,kind,event_key) values(requester,me,'follow_accepted',event);\n end if;\nend $function$\n"
+    }
+  ]
+}
