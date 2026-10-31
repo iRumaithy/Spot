@@ -12,3 +12,9 @@ async function routed(stable,accepted){
 const cases=[['3.3.0',null,'spot-v3.3.0.js'],['3.3.0','3.3.0','spot-v3.3.0.js'],['3.3.0','3.2.1','spot-v3.2.1.js'],['3.3.0','3.4.0','spot-v3.2.1.js'],['3.4.0',null,'spot-v3.4.0.js'],['3.4.0','3.3.0','spot-v3.3.0.js'],['3.4.0','3.2.1','spot-v3.2.1.js'],['3.4.0','3.4.0','spot-v3.4.0.js'],['3.4.0','3.1.2','thawaq-v3.1.2.js']];
 for(const [stable,accepted,expected] of cases)assert.ok((await routed(stable,accepted)).includes(expected),`stable=${stable}, accepted=${accepted}`);
 console.log(`PASS ${cases.length} release routing cases: candidate gating and installed-version retention`);
+const app=readFileSync(new URL('../spot-v3.4.0.js',import.meta.url),'utf8');
+const previewExpression=app.match(/PREVIEW_ONLY=(.*?), SURL=/)[1];
+for(const [pathname,expected] of [['/Spot/index.html',false],['/Spot/owner-preview-spot340.html',true],['/preview/aca7fdfb2efe0e08639ce8553cd7004208f0a9b5/3.4.0/index.html',true]]){
+ assert.equal(vm.runInNewContext(previewExpression,{location:{pathname}}),expected,pathname);
+}
+console.log('PASS 3 preview route cases: managed preview disables system notifications and app worker');
