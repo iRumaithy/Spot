@@ -1,0 +1,13 @@
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const s=readFileSync(new URL('../spot-v3.5.6.js',import.meta.url),'utf8');
+const c={};vm.runInNewContext(s.slice(s.indexOf('const SPOT_CITY_GROUPS='),s.indexOf('function spotCityPicker('))+';globalThis.canonical=spotCanonicalCity;globalThis.names=SPOT_CITY_NAMES;globalThis.groups=SPOT_CITY_GROUPS',c);
+for(const city of ['أبوظبي','أبو ظبي','ابوظبي',' ابو ظبي ','إبوظبي','أبوظبي','أبُوظبي'])assert.equal(c.canonical(city),'ابوظبي');
+assert.equal(c.groups.length,7);assert.equal(new Set(c.names).size,c.names.length);
+for(const city of ['ابوظبي','دبي','الشارقة','عجمان','أم القيوين','رأس الخيمة','الفجيرة','العين','الظفرة','خورفكان','كلباء'])assert.ok(c.names.includes(city));
+assert.equal(c.canonical('ام القيوين'),'أم القيوين');assert.equal(c.canonical('راس الخيمة'),'رأس الخيمة');assert.equal(c.canonical('مدينة سابقة غير معروفة'),'مدينة سابقة غير معروفة');
+const state={filter:{q:'',type:'all',city:'ابوظبي',sort:'recent'}};
+Object.assign(c,{state,spotCanView:()=>true});const start=s.indexOf('function getFilters('),end=s.indexOf('\n',start);vm.runInNewContext(s.slice(start,end)+';globalThis.filter=getFilters',c);
+const records=[{id:'one',city:'أبوظبي'},{id:'two',city:'ابوظبي'},{id:'three',city:'أبو ظبي'},{id:'four',city:'العين'}];assert.deepEqual(Array.from(c.filter(records),p=>p.id),['one','two','three']);
+console.log('PASS: canonical aliases, seven emirates, main cities, unique options, legacy values and mixed-spelling filter results');
