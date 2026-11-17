@@ -28,3 +28,7 @@ for(const [stable,accepted,expected] of [['3.5.6','3.6.0','spot-v3.5.6.js'],['3.
 assert.ok((await routed('3.6.0',null)).includes('spot-v3.6.0.css'));assert.ok((await routed('3.6.0','3.5.6')).includes('spot-v3.5.6.css'));assert.ok((await routed('3.5.6','3.6.0')).includes('spot-v3.5.6.css'));
 const current=readFileSync(new URL('../spot-v3.6.0.js',import.meta.url),'utf8').match(/PREVIEW_ONLY=(.*?), SURL=/)[1];assert.equal(vm.runInNewContext(current,{location:{pathname:'/Spot/owner-preview-spot360.html'}}),true);
 console.log('PASS 3.6.0 stable/candidate routing and CSS regression checks');
+
+for(const [stable,accepted,expected] of [['3.6.1',null,'spot-v3.6.1.js'],['3.6.1','3.7.0','spot-v3.6.1.js'],['3.7.0',null,'spot-v3.7.0.js'],['3.7.0','3.6.1','spot-v3.6.1.js']])assert.ok((await routed(stable,accepted)).includes(expected));
+assert.ok((await routed('3.7.0',null)).includes('spot-v3.7.0.css'));assert.ok((await routed('3.7.0','3.6.1')).includes('spot-v3.6.1.css'));
+console.log('PASS 3.7.0 candidate and retained 3.6.1 routing');
