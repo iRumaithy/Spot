@@ -1,0 +1,22 @@
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const app=readFileSync(new URL('../spot-v3.6.0.js',import.meta.url),'utf8');
+const source=app.slice(app.indexOf('// Home feed uses the immutable'),app.indexOf('// A single launch overlay'));
+const state={me:{id:'owner'},people:[{id:'owner',username:'owner',display_name:'Owner'},{id:'member',username:'member',display_name:'Member'}],posts:[{id:'post',owner_id:'owner',place_id:'place',visit_id:'visit'}],visits:[{id:'visit'}],places:[{id:'place',name:'Cafe',city:'ابوظبي'}],likes:new Set()};
+let inserts=[],fail=false;
+const text={value:'<script>alert(1)</script> تعليق',disabled:false,isConnected:true,focus(){}},button={disabled:false},errorBox={hidden:true},replyBar={hidden:true,innerHTML:''},list={innerHTML:'',scrollTop:37};
+const nodes={spotCommentText:text,spotCommentError:errorBox,spotCommentReplyTo:replyBar,spotCommentList:list};
+const c={state,document:{addEventListener(){},getElementById:id=>nodes[id]||null,querySelectorAll:()=>[]},window:{scrollY:15},navigator:{onLine:true},console,setTimeout,clearTimeout,spotUi:(ar,en)=>ar,spotUUID:()=>`new-${inserts.length}`,alertToast(){},spotCanView:id=>id!=='private',socialPosts:()=>c.posts||[],avatar:()=>'<i></i>',ico:()=>'<svg/>',escape:s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x])),dt:x=>x,btn:()=>'',spotLikeControl:()=>'',featuredPhoto:()=>'',spotCanonicalCity:x=>x,visitItems:()=>[],rating:()=>0,imageCredit:()=>'',spotVisibleStories:()=>[],iconType:()=>'',labelType:()=>'',sup:{from:()=>({insert:async row=>{if(fail)return {error:{message:'network failed'}};inserts.push(row);return {error:null}}}),rpc:async name=>({data:name==='spot_comment_summary'?[{post_id:'post',total:inserts.length}]:[],error:null})}};
+vm.runInNewContext(source+';globalThis.api={spotFeedPosts,spotCommentRow,spotSendComment,setRun:r=>spotComments=r,getRun:()=>spotComments,spotFetchCommentPage};',c);
+c.posts=[{id:'old',owner_id:'owner',visit_id:'visit',created_at:'2026-10-01',updated_at:'2027-01-01'},{id:'new',owner_id:'owner',visit_id:'visit',created_at:'2026-11-01'},{id:'private',owner_id:'private',visit_id:'visit',created_at:'2026-12-01'}];
+assert.deepEqual(Array.from(c.api.spotFeedPosts(),p=>p.id),['new','old'],'Edits must not move old experiences above newer posts or leak private posts');
+const html=c.api.spotCommentRow({id:'c',author_id:'owner',body:'<img onerror="alert(1)">',created_at:'now',reply_count:0},{post:'post',replies:new Map()});
+assert.ok(html.includes('صاحب المنشور'));assert.ok(html.includes('&lt;img'));assert.ok(!html.includes('<img onerror'));
+const form={querySelector:()=>button},run={post:'post',rows:[],replies:new Map(),reply:null,busy:false};c.api.setRun(run);
+fail=true;await c.api.spotSendComment(form);assert.equal(text.value,'<script>alert(1)</script> تعليق');assert.equal(errorBox.hidden,false);assert.equal(inserts.length,0);assert.equal(button.disabled,false);assert.equal(text.disabled,false);
+fail=false;await c.api.spotSendComment(form);assert.equal(inserts.length,1);assert.equal(run.rows.length,1);assert.equal(text.value,'');assert.equal(inserts[0].author_id,'owner');
+run.reply=run.rows[0].id;text.value='Owner reply';await c.api.spotSendComment(form);assert.equal(inserts[1].parent_id,run.rows[0].id);assert.equal(run.replies.get(run.rows[0].id).rows.length,1);assert.equal(run.rows[0].reply_count,1);
+// A pending request that finishes after the sheet closes must not resurrect it.
+c.sup.rpc=()=>new Promise(resolve=>setTimeout(()=>resolve({data:[{id:'late'}],error:null}),1));const pending=c.api.spotFetchCommentPage();c.api.setRun(null);await pending;assert.equal(c.api.getRun(),null);
+console.log('PASS publication order, private filtering, escaped comments, author badge, failed-send text retention, persisted payloads, root/reply association, closed-sheet race');
